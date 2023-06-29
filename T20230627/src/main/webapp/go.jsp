@@ -8,7 +8,10 @@
 </head>
 <body>
 <h3>검색조건</h3>
-시도:<input type="text" id="search"><button id="searchBtn">조회</button>
+시도:<select id="search">
+		<option value="sidoAry"></option>
+	</select>
+	<button id="searchBtn">조회</button>
 <br>
 <div id = "show">
 	<table border="1">
@@ -41,13 +44,33 @@ xhtp.onload = function(){
 	for(let i=0; i<data.data.length; i++){
 		tbody.append(makeRow(data.data[i]));
 	}
+	// sido 정보 => sidoAry
+	// totalData => [{}.{}.{}.....{}]
+	let sidoAry = [];
+	for(let totaldate of totalData){
+		console.log(sidoAry.indexOf(totaldate.sido));
+		if(sidoAry.indexOf(totaldate.sido) == -1){
+			sidoAry.push(totaldate.sido);
+		}
+		console.log(sidoAry);
+	}
+
+
 }	
 	let fields = ['id','centerName','phoneNumber','sido','zipCode'];
 	function makeRow(obj={}){
 		let tr = document.createElement('tr');
 		for(let field of fields){
 			let td =document.createElement('td');
-			td.innerText = obj[field];
+			if(field == 'centerName'){
+				let ahref = document.createElement('a');
+				ahref.innerText = obj[field]; 
+				ahref.setAttribute('href', 'map.jsp?lat='+obj.lat+'&lng='+obj.lng+'&centerName='+obj.centerName); // ahref.href = 'map.jsp'
+				ahref.setAttribute('target','_blank')
+				td.appendChild(ahref);
+			} else {
+				td.innerText = obj[field];
+			}
 			tr.appendChild(td);
 		}
 		return tr;
