@@ -66,7 +66,7 @@
 	
 	<c:forEach begin="${page.startPage }" end="${page.endPage }" var="i">
 		<c:choose>
-			<c:when test="${i == curPage }">
+			<c:when test="${i == page.curPage }">
 				<a href="boardList.do?page=${i }" class = "active"> <c:out value="${i }"></c:out> </a>
 			</c:when>
 			<c:otherwise>

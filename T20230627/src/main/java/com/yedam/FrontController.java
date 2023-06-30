@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.yedam.board.control.AddReplyControl;
+import com.yedam.board.control.DelReplyControl;
+import com.yedam.board.control.EditReplyControl;
+import com.yedam.board.control.ReplyControl;
+import com.yedam.board.control.ReplyListControl;
 import com.yedam.board.control.boardListControl;
 import com.yedam.board.control.boardselectControl;
 import com.yedam.calendar.control.AddEventControl;
@@ -54,9 +59,16 @@ public class FrontController extends HttpServlet{
 		menu.put("/addEvent.do", new AddEventControl());
 		menu.put("/removeEvent.do", new RemoveEventControl());
 		
-
+		//게시판
 		menu.put("/boardList.do", new boardListControl());
 		menu.put("/boardselect.do", new boardselectControl());
+		
+		//댓글 (Ajax  처리를 위한 컨트롤)
+		menu.put("/replyList.do", new ReplyListControl());
+		menu.put("/getReply.do", new ReplyControl());
+		menu.put("/addReply.do", new AddReplyControl());
+		menu.put("/editReply.do", new EditReplyControl());
+		menu.put("/delReply.do", new DelReplyControl());
 	}
 	
 	@Override

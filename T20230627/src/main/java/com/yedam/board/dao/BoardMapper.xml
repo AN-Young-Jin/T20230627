@@ -6,8 +6,8 @@
  
   <select id="boardList" >
   
-  select * from tbl_board
-   <!--  select *
+ 
+     select *
 	from(
         select rownum rn, a.*
         from ( 
@@ -18,7 +18,7 @@
 	where b.rn > (#{page} - 1) * 10 
 	<![CDATA[
 	and     b.rn <= #{page} * 10
-	]]> -->
+	]]>
   </select>
   
   
@@ -26,5 +26,9 @@
   	select * from tbl_board where brd_no = #{bno}
   </select>
   
+  <select id ="page">
+  	select count(*)
+  	from tbl_board
+  </select>
   
 </mapper>

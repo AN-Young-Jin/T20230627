@@ -14,13 +14,20 @@ public class BoardServiceImpl implements BoardService{
 	BoardMapper mapper = session.getMapper(BoardMapper.class);
 	
 	@Override
-	public List<BoardVO> list() {
-		return mapper.boardList();
+	public List<BoardVO> list(int page) {
+		return mapper.boardList(page);
 	}
 
 	@Override
 	public BoardVO getBoard(long brdNo) {
 		return mapper.selectBoard(brdNo);
+	}
+
+
+
+	@Override
+	public int page() {
+		return mapper.page();
 	}
 
 }
