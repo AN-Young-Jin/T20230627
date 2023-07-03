@@ -55,7 +55,7 @@
 				</div>
 				<!-- footer -->
 				<div class="panel-footer">
-					showReplyPage();
+					
 				</div>
 			</div>
 		</div>
@@ -172,27 +172,38 @@
 		}
 		//댓글목록 리스트 보여주기
 		const bno = '${board.brdNo }';
-		console.log(bno);
+		//console.log(bno);
 
 		const replyUL = document.querySelector('ul.chat');
 
 		// 댓글목록(Ajax)
-		fetch('replyList.do?brdNo=' + bno) 
-		.then(function(response){           //정상실행
-			console.log(response);
-			return response.json();
-		})          
-		.then(function(result){
-			console.log(result);
-			for(let reply of result){
-				replyUL.innerHTML += makeList(reply);
-			}
-			searchList();
-		})             
-		.catch(function(err){           //에러발생
-			console.error(err);
-		})					  
-		
+		function replyFnc(bno,page){
+			
+			fetch('replyList.do?brdNo=' + bno + '&page=' + page) 
+			.then(function(response){           //정상실행
+				//console.log(response);
+				return response.json();
+			})          
+			.then(function(result){
+				if(page == -1){
+					pageNum = Math.ceil(result.count / 10.0);
+					replyFnc(bno,pageNum);
+					return;
+				}
+				console.log(result); //count: 39, list:[]
+				// 기존데이터 초기화
+				replyUL.innerHTML ="";
+				for(let reply of result.list){
+					replyUL.innerHTML += makeList(reply);
+				}
+				searchList();
+				showReplyPage(result.count);
+			})             
+			.catch(function(err){           //에러발생
+				console.error(err);
+			})					  
+		}
+		replyFnc(bno,-1); //마지막 페이지 출력
 		//수정버튼
 		document.querySelector('#modalModBtn').addEventListener('click',function(e){
 			let rno=  document.querySelector('#myModal input[name = "replyNo"]').value;
@@ -230,10 +241,11 @@
 			.then(response => response.json())
 			.then(result => {
 				let replyNo = result.replyNo;
-				let tagetLI = document.querySelector('.chat li[data-rno="'+replyNo+'"]');
+				//let tagetLI = document.querySelector('.chat li[data-rno="'+replyNo+'"]');
+				//tagetLI.remove();
+				replyFnc(bno,pageNum);
+
 				//modal창 닫기
-				tagetLI.remove();
-				
 				modal.style.display = 'none';
 				modal.style.opacity = 0;
 				
@@ -254,8 +266,9 @@
 			})
 			.then(response => response.json())
 			.then(result =>{
-				replyUL.innerHTML += makeList(result);
-				searchList();
+				//replyUL.innerHTML += makeList(result);
+				//searchList();
+				replyFnc(bno, -1);
 				//modal창 닫기
 				
 				modal.style.display = 'none';
@@ -278,21 +291,33 @@
 			if(endPage*10 <replyCnt){
 				next = true;
 			}
-		}
+		
 
 		//계산한 값으로 페이지 출력
 		let str = '<ul class ="pagination pull-right">';
 			if(prev){
-				str+='<li class="page-item"><a href="">' + (startPage-1) + '</a></li>';
+				str+='<li class="page-item"><a data-page="'+(startPage-1)+'" href="" class="paging"> Prev </a></li>';
 			}
 			for(let i=startPage; i<=endPage; i++){
-				str+='<li class="page-item"><a href="">' + i + '</a></li>';
+				str+='<li class="page-item"><a data-page="'+i+'" href="" class="paging">' + i + '</a></li>';
 			}
 			if(next){
-				str+='<li class="page-item"><a href="">' + (endPage+1) + '</a></li>';
+				str+='<li class="page-item"><a data-page="'+(endPage+1)+'" href="" class="paging"> Next </a></li>';
 			}
 			str += '</ul>';
+			document.querySelector('div.panel-footer').innerHTML = str;
 
+			// 링크클릭 이벤트
+			document.querySelectorAll('a.paging').forEach(aTag =>{
+				aTag.addEventListener ('click', function(e){
+					event.preventDefault();
+					let pageNum = aTag.dataset.page;
+					console.log(pageNum);
+					replyFnc(bno,pageNum); // 원본글, 페이지 호출
+				})
+			})
+		}
+		//showReplyPage(36);
 	</script>
     <a href="boardList.do">목록으로 이동</a>
     

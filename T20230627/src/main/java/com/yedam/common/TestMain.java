@@ -22,7 +22,7 @@ public class TestMain {
 //		mapper.insertReply(reply);
 //		mapper.updateReply(reply);
 		mapper.deleteReply(7);
-		List<ReplyVO> list = mapper.selectList(1857);
+		List<ReplyVO> list = mapper.selectList(1857,1);
 		
 		for(ReplyVO vo : list) {
 			System.out.println(vo.toString());
