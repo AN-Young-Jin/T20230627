@@ -29,6 +29,7 @@ import com.yedam.member.control.ImageUploadControl;
 import com.yedam.member.control.LoginControl;
 import com.yedam.member.control.LoginFormControl;
 import com.yedam.member.control.MemberAddControl;
+import com.yedam.member.control.MemberEditJson;
 import com.yedam.member.control.MemberInfoControl;
 import com.yedam.member.control.MemberInfoJson;
 import com.yedam.member.control.MemberListControl;
@@ -59,6 +60,7 @@ public class FrontController extends HttpServlet{
 		menu.put("/memberInfoJson.do", new MemberInfoJson());
 		
 		menu.put("/memberAdd.do", new MemberAddControl());
+		menu.put("/memberEditJson.do", new MemberEditJson());
 		
 		menu.put("/chartForm.do", new ChartFormControl());
 		menu.put("/chartData.do", new ChartDataControl());

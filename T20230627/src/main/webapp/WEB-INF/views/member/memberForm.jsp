@@ -28,7 +28,9 @@
                                                 ,$('<td />').text(item.userPhone)
                                                 ,$('<td />').append($('<img />').attr('src','images/' +item.userImg)
                                                                                 .attr('width','25px'))                  
+                                                ,$('<td />').append($('<button />').text('삭제').on('click',delMemFnc))
                         )
+                        tr.data('id',item.userId)
                         tr.on('click',modifyFnc);
                         $('#list').append(tr);
                     })
@@ -38,6 +40,31 @@
                 }
                 
             });
+
+            function delMemFnc(e){
+                e.stopPropagation(); //이벤트 전파 차단
+                //data-id -> dataset
+                console.log($(this).parent().parent().data('id'));
+                // DOM : this.parentElement.parentElement
+                let targetId = $(this).parent().parent().data('id');
+                // <tr data-id = "user01"> $('tr[data-id="'+targetId+'"]').remove())
+                let targetTr = $(this).parent().parent();
+                $.ajax({
+                    url: '',
+                    method : 'post',
+                    data: {id: targetId},
+                    success : function(result){
+                        if(result.retCode == 'Success'){
+                            targetTr.remove();
+                        }
+                    },
+                    error : function(error){
+                        console.error(error);
+                    }
+                })
+            }
+
+
 
             function modifyFnc(e){
              //console.log($(this).children().eq(0).text());
@@ -87,9 +114,37 @@
                     }     
                 });
             }
+            //변경버튼 클릭시
+            $('#modBtn').on('click',modiForm);
 
-            
-            
+            function modiForm(e){
+                //e.preventDefault();
+
+                $.ajax({
+                    url : 'memberEditJson.do',
+                    method : 'post',
+                    data :{ uid: $('#uid').val(),   //"{uid=" + $('input[name="uid"]').val(),
+                           upw: $('#upw').val(),
+                           uphone : $('#uphone').val(),
+                           uaddr : $('#uaddr').val()
+                    },
+                    success : function(result){
+                        // console.log($('list tr'));
+                        //Array.prototype.forEach(function(item,idx,ary){})
+                        $('#list tr').each(function(idx,item){
+                           // console.log(idx,item);
+                            if($(item).children().eq(0).text() == result.userId){
+                                $(item).children().eq(3).text(result.userPhone);
+                            }
+                        });
+                    },   
+                    error : function(err){
+                        console.error(err);
+                    }     
+                })
+
+            }
+         
         })
     </script>
 <h3>Jquery 연습</h3>
@@ -123,7 +178,7 @@
             <td colspan="2" align="center">
                 <input type="submit" value="등록">
                 <input type="reset" value="초기화">
-                <button type="button">변경</button>
+                <button type="button" id="modBtn">변경</button>
             </td>
         </tr>
     </table>
@@ -137,6 +192,7 @@
             <th>생일</th>
             <th>연락처</th>
             <th>사진</th>
+            <th>삭제</th>
         </tr>   
     </thead>
     <tbody id="list"></tbody>
